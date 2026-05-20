@@ -1,0 +1,88 @@
+# Application Configuration
+spring:
+  application:
+    name: food-store
+
+  # Database Configuration
+  datasource:
+    url: jdbc:mysql://localhost:3309/food_store_db
+    username: root
+    password: "root" 
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  # JPA/Hibernate Configuration
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+  # File Upload Configuration
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 50MB
+      max-request-size: 50MB
+
+  # Session Configuration
+  session:
+    store-type: jdbc
+    jdbc:
+      initialize-schema: always
+
+  # Email Configuration
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: quocduy74525@gmail.com
+    password: vwcjvrcnswqwwymc
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  # OAuth2 Configuration
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: test_google_id
+            client-secret: test_google_secret
+            scope: email,profile
+          github:
+            client-id: test_github_id
+            client-secret: test_github_secret
+
+  # Static Resources Configuration
+  web:
+    resources:
+      add-mappings: false
+
+  # RabbitMQ Configuration
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+# Server Configuration
+server:
+  servlet:
+    session:
+      timeout: 30m
+  port: 8080
+
+# VNPay Configuration
+trinhlam:
+  vnpay:
+    tmn-code: test_code_123 
+    hash-secret: test_secret
+    vnp-url: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
+    vnp-return-url: http://localhost:8080/afterOrder
+
+# Gemini AI API Configuration
+# Gemini AI API Configuration
+api:
+  gemini:
+    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyBtAty7hF9w18pHMG5k-nF83xTTD4Tm9wg
