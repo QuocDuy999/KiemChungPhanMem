@@ -66,8 +66,7 @@ public class SecurityConfiguration {
                 http
                 .csrf(csrf -> csrf
                 // Cho phép các request tới Gemini API mà không cần CSRF token
-                .ignoringRequestMatchers("/gemini-proxy/**")
-                // Các endpoint khác vẫn yêu cầu CSRF protection
+                .ignoringRequestMatchers("/gemini-proxy/**", "/register/**", "/verify/**") 
                 .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .authorizeHttpRequests(authorize -> authorize
                 .dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.INCLUDE)
