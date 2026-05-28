@@ -210,11 +210,12 @@
                             ]
                         },
                         "url": { "raw": "{{base_url}}/login", "host": ["{{base_url}}"], "path": ["login"] },
-                        "description": "Nhập sai mật khẩu. Bị đá về trang /login?error."
+                        "description": "Nhập sai mật khẩu. Bị đá về trang /login"
                     }
                 }
             ]
         }
+
     ],
     "variable": [
         {
