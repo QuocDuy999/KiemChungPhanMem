@@ -1,0 +1,77 @@
+spring:
+  application:
+    name: food-store
+
+  datasource:
+    url: jdbc:mysql://localhost:3309/food_store_db?useSSL=false&serverTimezone=Asia/Ho_Chi_Minh&allowPublicKeyRetrieval=true
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 50MB
+      max-request-size: 50MB
+
+  # Tắt session JDBC để tránh lỗi
+  session:
+    store-type: jdbc
+    jdbc:
+      initialize-schema: always
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: quocduy74525@gmail.com
+    password: vwcjvrcnswqwwymc
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: test_google_id
+            client-secret: test_google_secret
+            scope:
+              - email
+              - profile
+
+          github:
+            client-id: test_github_id
+            client-secret: test_github_secret
+
+  web:
+    resources:
+      add-mappings: false
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+server:
+  port: 8080
+
+trinhlam:
+  vnpay:
+    tmn-code: test_code_123
+    hash-secret: test_secret
+    vnp-url: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
+    vnp-return-url: http://localhost:8080/afterOrder
+
+api:
+  gemini:
+    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=YOUR_KEY

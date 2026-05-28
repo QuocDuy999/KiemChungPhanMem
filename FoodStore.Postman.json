@@ -1,0 +1,225 @@
+{
+    "info": {
+        "name": "Food Store Web MVC - All Test Cases",
+        "description": "Kiểm thử toàn diện các trường hợp Đúng/Sai cho luồng Đăng ký, OTP, Đăng nhập và Test 2 Quyền (Admin/Khách).",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "event": [
+        {
+            "listen": "prerequest",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    "// Tự động trích xuất XSRF-TOKEN từ Cookie và gắn vào Header",
+                    "let csrfToken = pm.cookies.get(\"XSRF-TOKEN\");",
+                    "if (csrfToken) {",
+                    "    pm.request.headers.add({key: 'X-XSRF-TOKEN', value: csrfToken});",
+                    "}"
+                ]
+            }
+        }
+    ],
+    "item": [
+        {
+            "name": "1. Kiểm tra Dữ liệu (Verify)",
+            "item": [
+                {
+                    "name": "1.1. Hợp lệ (Gửi Mail OTP)",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                { "key": "email", "value": "caoquocduydualeo@gmail.com", "type": "text" },
+                                { "key": "password", "value": "Quocduy123@123", "type": "text" },
+                                { "key": "confirmPassword", "value": "Quocduy123@123", "type": "text" },
+                                { "key": "fullName", "value": "Cao Quoc Duy", "type": "text" },
+                                { "key": "phone", "value": "0123456789", "type": "text" },
+                                { "key": "address", "value": "Hanoi, Vietnam", "type": "text" }
+                            ]
+                        },
+                        "url": { "raw": "{{base_url}}/verify", "host": ["{{base_url}}"], "path": ["verify"] },
+                        "description": "Dữ liệu chuẩn. Trả về trang xác nhận OTP."
+                    }
+                },
+                {
+                    "name": "1.2. Lỗi: Mật khẩu không đủ ký tự",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                { "key": "email", "value": "caoquocduydualeo@gmail.com", "type": "text" },
+                                { "key": "password", "value": "duy", "type": "text" },
+                                { "key": "confirmPassword", "value": "duy", "type": "text" },
+                                { "key": "fullName", "value": "Cao Quoc Duy", "type": "text" }
+                            ]
+                        },
+                        "url": { "raw": "{{base_url}}/verify", "host": ["{{base_url}}"], "path": ["verify"] },
+                        "description": "Bị chặn bởi StrnogPasswordValidator. Bấm Preview sẽ thấy báo lỗi trên HTML."
+                    }
+                },
+                {
+                    "name": "1.3. Lỗi: Xác nhận mật khẩu sai",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                { "key": "email", "value": "caoquocduydualeo@gmail.com", "type": "text" },
+                                { "key": "password", "value": "Quocduy123@123", "type": "text" },
+                                { "key": "confirmPassword", "value": "Quocduy123@456", "type": "text" },
+                                { "key": "fullName", "value": "Cao Quoc Duy", "type": "text" }
+                            ]
+                        },
+                        "url": { "raw": "{{base_url}}/verify", "host": ["{{base_url}}"], "path": ["verify"] },
+                        "description": "Bị chặn bởi RegosterCheckedValidator. Confirm Password khác Password."
+                    }
+                },
+                {
+                    "name": "1.4. Lỗi: Sai định dạng Email",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                { "key": "email", "value": "caoquocduydualeo", "type": "text" },
+                                { "key": "password", "value": "Quocduy123@123", "type": "text" },
+                                { "key": "confirmPassword", "value": "Quocduy123@123", "type": "text" },
+                                { "key": "fullName", "value": "Sai Email", "type": "text" }
+                            ]
+                        },
+                        "url": { "raw": "{{base_url}}/verify", "host": ["{{base_url}}"], "path": ["verify"] },
+                        "description": "Bị chặn bởi annotation @Email trong entity User."
+                    }
+                },
+                {
+                    "name": "1.5. Lỗi: Tên quá ngắn",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                { "key": "email", "value": "caoquocduydualeo@gmail.com", "type": "text" },
+                                { "key": "password", "value": "Quocduy123@123", "type": "text" },
+                                { "key": "confirmPassword", "value": "Quocduy123@123", "type": "text" },
+                                { "key": "fullName", "value": "Du", "type": "text" }
+                            ]
+                        },
+                        "url": { "raw": "{{base_url}}/verify", "host": ["{{base_url}}"], "path": ["verify"] },
+                        "description": "Họ tên nhỏ hơn 3 ký tự. Bị chặn bởi logic trong Controller."
+                    }
+                }
+            ]
+        },
+        {
+            "name": "2. Xác nhận Đăng ký (OTP)",
+            "item": [
+                {
+                    "name": "2.1. Hợp lệ (Lưu Database)",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                { "key": "email", "value": "caoquocduydualeo@gmail.com", "type": "text" },
+                                { "key": "password", "value": "Quocduy123@123", "type": "text" },
+                                { "key": "confirmPassword", "value": "Quocduy123@123", "type": "text" },
+                                { "key": "fullName", "value": "Cao Quoc Duy", "type": "text" },
+                                { "key": "OTP", "value": "111222", "type": "text" },
+                                { "key": "OTP_check", "value": "111222", "type": "text" }
+                            ]
+                        },
+                        "url": { "raw": "{{base_url}}/register", "host": ["{{base_url}}"], "path": ["register"] },
+                        "description": "Gửi OTP và OTP_check khớp nhau để lưu thẳng user vào Database."
+                    }
+                },
+                {
+                    "name": "2.2. Lỗi: Sai mã OTP",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                { "key": "email", "value": "caoquocduydualeo@gmail.com", "type": "text" },
+                                { "key": "password", "value": "Quocduy123@123", "type": "text" },
+                                { "key": "confirmPassword", "value": "Quocduy123@123", "type": "text" },
+                                { "key": "fullName", "value": "Cao Quoc Duy", "type": "text" },
+                                { "key": "OTP", "value": "111222", "type": "text" },
+                                { "key": "OTP_check", "value": "999999", "type": "text" }
+                            ]
+                        },
+                        "url": { "raw": "{{base_url}}/register", "host": ["{{base_url}}"], "path": ["register"] },
+                        "description": "Hai mã OTP lệch nhau. Trả về thông báo lỗi OTP."
+                    }
+                }
+            ]
+        },
+        {
+            "name": "3. Đăng nhập (Spring Security)",
+            "item": [
+                {
+                    "name": "3.1. 🔑 Login - Dành cho ADMIN",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                { "key": "username", "value": "admin@gmail.com", "type": "text" },
+                                { "key": "password", "value": "123456", "type": "text" }
+                            ]
+                        },
+                        "url": { "raw": "{{base_url}}/login", "host": ["{{base_url}}"], "path": ["login"] },
+                        "description": "Chạy API này để đóng vai Admin. Sau đó mới test thư mục 7 và 8."
+                    }
+                },
+                {
+                    "name": "3.2. 👤 Login - Dành cho KHÁCH HÀNG",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                { "key": "username", "value": "caoquocduydualeo@gmail.com", "type": "text" },
+                                { "key": "password", "value": "Quocduy123@123", "type": "text" }
+                            ]
+                        },
+                        "url": { "raw": "{{base_url}}/login", "host": ["{{base_url}}"], "path": ["login"] },
+                        "description": "Chạy API này để đóng vai Khách hàng. Sau đó mới test thư mục 5 và 6."
+                    }
+                },
+                {
+                    "name": "3.3. Lỗi: Sai thông tin đăng nhập",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                { "key": "username", "value": "admin@gmail.com", "type": "text" },
+                                { "key": "password", "value": "1234567", "type": "text" }
+                            ]
+                        },
+                        "url": { "raw": "{{base_url}}/login", "host": ["{{base_url}}"], "path": ["login"] },
+                        "description": "Nhập sai mật khẩu. Bị đá về trang /login?error."
+                    }
+                }
+            ]
+        }
+    ],
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost:8080"
+        }
+    ]
+}
