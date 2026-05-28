@@ -210,14 +210,10 @@
                             ]
                         },
                         "url": { "raw": "{{base_url}}/login", "host": ["{{base_url}}"], "path": ["login"] },
-                        "description": "Nhập sai mật khẩu. Bị đá về trang /login"
+                        "description": "Nhập sai mật khẩu. Bị đá về trang /login?error."
                     }
                 }
             ]
-<<<<<<< HEAD
-        }
-
-=======
         },
         {
             "name": "4. Quản lý Profile & Lịch sử",
@@ -265,7 +261,6 @@
                 }
             ]
         }
->>>>>>> 4306caa (KAN-12 Test Lỗi Quản Lý Profile Và Lịch Sử)
     ],
     "variable": [
         {
