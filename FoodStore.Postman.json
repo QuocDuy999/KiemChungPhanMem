@@ -214,8 +214,58 @@
                     }
                 }
             ]
+<<<<<<< HEAD
         }
 
+=======
+        },
+        {
+            "name": "4. Quản lý Profile & Lịch sử",
+            "item": [
+                {
+                    "name": "4.1. Đổi mật khẩu",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                { "key": "userId", "value": "1", "type": "text" },
+                                { "key": "lastPassword", "value": "123456", "type": "text" },
+                                { "key": "newPassword", "value": "1234567", "type": "text" }
+                            ]
+                        },
+                        "url": { "raw": "{{base_url}}/change-password", "host": ["{{base_url}}"], "path": ["change-password"] }
+                    }
+                },
+                {
+                    "name": "4.2. Cập nhật Profile (Upload Avatar)",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                { "key": "id", "value": "22", "type": "text" },
+                                { "key": "phone", "value": "0987654321", "type": "text" },
+                                { "key": "address", "value": "Quận 1, HCM", "type": "text" },
+                                { "key": "avatarFile", "type": "file" }
+                            ]
+                        },
+                        "url": { "raw": "{{base_url}}/update-profile", "host": ["{{base_url}}"], "path": ["update-profile"] }
+                    }
+                },
+                {
+                    "name": "4.3. Xem Lịch sử Đơn hàng",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": { "raw": "{{base_url}}/order-history", "host": ["{{base_url}}"], "path": ["order-history"] }
+                    }
+                }
+            ]
+        }
+>>>>>>> 4306caa (KAN-12 Test Lỗi Quản Lý Profile Và Lịch Sử)
     ],
     "variable": [
         {
