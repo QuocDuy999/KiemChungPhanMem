@@ -209,8 +209,8 @@ public class ItemController extends BaseController {
     public String deleteCartDetail(@PathVariable long id, HttpServletRequest request) {
         log.info("Request to /delete-cart-product/{id}");
         HttpSession session = request.getSession(false);
-        long cartDetailId = id;
-        this.productService.handleRemoveCartDetail(cartDetailId, session);
+        long productId = id;
+        this.productService.handleRemoveCartDetail(productId, session);
         return "redirect:/cart";
     }
     
@@ -247,10 +247,4 @@ public class ItemController extends BaseController {
         this.productService.handleAddProductToCart(email, id, session, quantity);
         return "redirect:/product/" + id;
     }
-
-   
-    
-
-     
-
 }

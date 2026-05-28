@@ -64,10 +64,7 @@ public class SecurityConfiguration {
         @Bean
         SecurityFilterChain filterChain(HttpSecurity http, UserService userService) throws Exception {
                 http
-                .csrf(csrf -> csrf
-                // Cho phép các request tới Gemini API mà không cần CSRF token
-                .ignoringRequestMatchers("/gemini-proxy/**", "/register/**", "/verify/**") 
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize
                 .dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.INCLUDE)
                 .permitAll()
@@ -79,7 +76,7 @@ public class SecurityConfiguration {
                 .successHandler(customSuccessHandler(userService))
                 .failureHandler(customFailureHandler)
                 .userInfoEndpoint(user -> user.userService(new CustomOAuth2UserService(userService))))
-                .sessionManagement((sessionManagement) -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.ALWAYS).invalidSessionUrl("/logout?expired").maximumSessions(1).maxSessionsPreventsLogin(false))
+                .sessionManagement((sessionManagement) -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.ALWAYS).invalidSessionUrl("/logout?expired").maximumSessions(5).maxSessionsPreventsLogin(false))
                 .logout(logout -> logout.deleteCookies("JSESSIONID").invalidateHttpSession(true))
                 .rememberMe(r -> r.rememberMeServices(rememberMeServices()))
                 .formLogin(formLogin -> formLogin.loginPage("/login").failureUrl("/login?error").successHandler(customSuccessHandler(userService)).permitAll()).exceptionHandling(ex -> ex.accessDeniedPage("/access-deny"));

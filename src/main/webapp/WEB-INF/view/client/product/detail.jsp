@@ -173,37 +173,32 @@ uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                   </div>
                 </div>
 
-                <form
-                  action="/add-product-from-view-detail"
-                  method="post"
-                  modelAttribute="prd"
-                >
-                  <input
-                    type="hidden"
-                    name="${_csrf.parameterName}"
-                    value="${_csrf.token}"
-                  />
-                  <input
-                    class="form-control d-none"
-                    type="text"
-                    value="${prd.id}"
-                    name="id"
-                  />
+                <form action="/add-product-from-view-detail" method="post">
+    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+    
+    <input type="hidden" name="id" value="${prd.id}" />
 
-                  <input
-                    class="form-control d-none"
-                    type="text"
-                    name="quantity"
-                    id="cartDetails0.quantity"
-                  />
-                  <button
-                    data-product-id="${prd.id}"
-                    class="btnAddToCartDetail btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary"
-                  >
-                    <i class="fa fa-shopping-bag me-2 text-primary"></i>
-                    Thêm vào giỏ hàng
-                  </button>
-                </form>
+    <div class="input-group quantity mb-5" style="width: 100px">
+        <div class="input-group-btn">
+            <button type="button" class="btn btn-sm btn-minus rounded-circle bg-light border">
+                <i class="fa fa-minus"></i>
+            </button>
+        </div>
+        
+        <input type="text" class="form-control form-control-sm text-center border-0" value="1" name="quantity" readonly />
+        
+        <div class="input-group-btn">
+            <button type="button" class="btn btn-sm btn-plus rounded-circle bg-light border">
+                <i class="fa fa-plus"></i>
+            </button>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary">
+        <i class="fa fa-shopping-bag me-2 text-primary"></i>
+        Thêm vào giỏ hàng
+    </button>
+</form>
               </div>
               <div class="col-lg-12">
                 <nav>
@@ -252,17 +247,17 @@ uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                   >
                     <div class="d-flex">
                       <img
-                        src="/images/avatar/1727521661956-avt.png"
+                        src="/client/img/user.jpg"
                         class="img-fluid rounded-circle p-3"
                         style="width: 100px; height: 100px"
                         alt=""
                       />
                       <div class="">
                         <p class="mb-2" style="font-size: 14px">
-                          September 12, 2024
+                          September 12, 2025
                         </p>
                         <div class="d-flex justify-content-between">
-                          <h5>Trịnh Quang Lâm</h5>
+                          <h5>Khách Hàng</h5>
                           <div class="d-flex mb-3">
                             <i class="fa fa-star text-secondary"></i>
                             <i class="fa fa-star text-secondary"></i>

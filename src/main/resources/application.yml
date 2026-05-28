@@ -21,7 +21,9 @@ spring:
 
   # Tắt session JDBC để tránh lỗi
   session:
-    store-type: none
+    store-type: jdbc
+    jdbc:
+      initialize-schema: always
 
   mail:
     host: smtp.gmail.com

@@ -299,25 +299,18 @@
                                                                 ${product.shortDesc}</p>
                                                             <div
                                                                 class="d-flex  flex-lg-wrap justify-content-center flex-column">
-                                                                <p style="font-size: 15px; text-align: center; width: 100%;"
-                                                                    class="text-dark  fw-bold mb-3">
-                                                                    <fmt:formatNumber type="number"
-                                                                        value="${product.price}" />
-                                                                    đ
+                                                               <p style="font-size: 15px; text-align: center; width: 100%;" class="text-dark fw-bold mb-3">
+                                                                    <fmt:formatNumber type="number" value="${product.price}" /> đ
                                                                 </p>
-                                                                <!-- <form action="/add-product-to-cart/${product.id}"
-                                                                    method="post"> -->
-                                                                <input type="hidden" name="${_csrf.parameterName}"
-                                                                    value="${_csrf.token}" />
-                                                                <input class="form-control d-none" type="text"
-                                                                    name="quantity" id="cartDetails0.quantity"
-                                                                    value="1" />
 
-                                                                <button data-product-id="${product.id}"
-                                                                    class="btnAddToCartDetail mx-auto btn border border-secondary rounded-pill px-3 text-primary"><i
-                                                                        class="fa fa-shopping-bag me-2 text-primary"></i>
-                                                                    Thêm vào giỏ hàng
-                                                                </button>
+                                                                <form action="/add-product-to-cart/${product.id}" method="post">
+                                                                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                                                                    
+                                                                    <button type="submit" class="mx-auto btn border border-secondary rounded-pill px-3 text-primary d-block">
+                                                                        <i class="fa fa-shopping-bag me-2 text-primary"></i>
+                                                                        Thêm vào giỏ hàng
+                                                                    </button>
+                                                                </form>
                                                                 <!-- </form> -->
                                                             </div>
                                                         </div>
