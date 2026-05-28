@@ -214,10 +214,6 @@
                     }
                 }
             ]
-<<<<<<< HEAD
-        }
-
-=======
         },
         {
             "name": "4. Quản lý Profile & Lịch sử",
@@ -256,7 +252,7 @@
                     }
                 },
                 {
-                    "name": "4.3. Xem Lịch sử Đơn hàng",
+                    "name": "4.3. Xem Lịch sử Đơn hàng.",
                     "request": {
                         "method": "GET",
                         "header": [],
@@ -265,7 +261,6 @@
                 }
             ]
         }
->>>>>>> 4306caa (KAN-12 Test Lỗi Quản Lý Profile Và Lịch Sử)
     ],
     "variable": [
         {
