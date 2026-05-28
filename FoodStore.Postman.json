@@ -116,6 +116,51 @@
                     }
                 }
             ]
+        },
+        {
+            "name": "2. Xác nhận Đăng ký (OTP)",
+            "item": [
+                {
+                    "name": "2.1. Hợp lệ (Lưu Database)",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                { "key": "email", "value": "caoquocduydualeo@gmail.com", "type": "text" },
+                                { "key": "password", "value": "Quocduy123@123", "type": "text" },
+                                { "key": "confirmPassword", "value": "Quocduy123@123", "type": "text" },
+                                { "key": "fullName", "value": "Cao Quoc Duy", "type": "text" },
+                                { "key": "OTP", "value": "111222", "type": "text" },
+                                { "key": "OTP_check", "value": "111222", "type": "text" }
+                            ]
+                        },
+                        "url": { "raw": "{{base_url}}/register", "host": ["{{base_url}}"], "path": ["register"] },
+                        "description": "Gửi OTP và OTP_check khớp nhau để lưu thẳng user vào Database."
+                    }
+                },
+                {
+                    "name": "2.2. Lỗi: Sai mã OTP",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                { "key": "email", "value": "caoquocduydualeo@gmail.com", "type": "text" },
+                                { "key": "password", "value": "Quocduy123@123", "type": "text" },
+                                { "key": "confirmPassword", "value": "Quocduy123@123", "type": "text" },
+                                { "key": "fullName", "value": "Cao Quoc Duy", "type": "text" },
+                                { "key": "OTP", "value": "111222", "type": "text" },
+                                { "key": "OTP_check", "value": "999999", "type": "text" }
+                            ]
+                        },
+                        "url": { "raw": "{{base_url}}/register", "host": ["{{base_url}}"], "path": ["register"] },
+                        "description": "Hai mã OTP lệch nhau. Trả về thông báo lỗi OTP."
+                    }
+                }
+            ]
         }
     ],
     "variable": [
