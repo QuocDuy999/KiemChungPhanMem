@@ -260,7 +260,45 @@
                     }
                 }
             ]
+        },{
+            "name": "5. Client - Xem Sản phẩm",
+            "item": [
+                {
+                    "name": "5.1. Trang chủ (HomePage)",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": { "raw": "{{base_url}}/", "host": ["{{base_url}}"], "path": [""] }
+                    }
+                },
+                {
+                    "name": "5.2. Lọc & Tìm Sản phẩm",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/products?page=1&sort=gia-tang-dan&type=rau",
+                            "host": ["{{base_url}}"],
+                            "path": ["products"],
+                            "query": [
+                                { "key": "page", "value": "1" },
+                                { "key": "sort", "value": "gia-tang-dan" },
+                                { "key": "type", "value": "rau" }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "5.3. Xem Chi tiết Sản phẩm",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": { "raw": "{{base_url}}/product/1", "host": ["{{base_url}}"], "path": ["product", "1"] }
+                    }
+                }
+            ]
         }
+        
     ],
     "variable": [
         {
