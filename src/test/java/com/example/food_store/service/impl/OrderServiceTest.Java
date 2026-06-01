@@ -1,0 +1,686 @@
+{
+    "info": {
+        "name": "Food Store Web MVC - All Test Cases",
+        "description": "Kiểm thử toàn diện các trường hợp Đúng/Sai cho luồng Đăng ký, OTP, Đăng nhập và Test 2 Quyền (Admin/Khách).",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "event": [
+        {
+            "listen": "prerequest",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    "// Tự động trích xuất XSRF-TOKEN từ Cookie và gắn vào Header",
+                    "let csrfToken = pm.cookies.get(\"XSRF-TOKEN\");",
+                    "if (csrfToken) {",
+                    "    pm.request.headers.add({key: 'X-XSRF-TOKEN', value: csrfToken});",
+                    "}"
+                ]
+            }
+        }
+    ],
+    "item": [
+        {
+            "name": "1. Kiểm tra Dữ liệu (Verify)",
+            "item": [
+                {
+                    "name": "1.1. Hợp lệ (Gửi Mail OTP)",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                { "key": "email", "value": "caoquocduydualeo@gmail.com", "type": "text" },
+                                { "key": "password", "value": "Quocduy123@123", "type": "text" },
+                                { "key": "confirmPassword", "value": "Quocduy123@123", "type": "text" },
+                                { "key": "fullName", "value": "Cao Quoc Duy", "type": "text" },
+                                { "key": "phone", "value": "0123456789", "type": "text" },
+                                { "key": "address", "value": "Hanoi, Vietnam", "type": "text" }
+                            ]
+                        },
+                        "url": { "raw": "{{base_url}}/verify", "host": ["{{base_url}}"], "path": ["verify"] },
+                        "description": "Dữ liệu chuẩn. Trả về trang xác nhận OTP."
+                    }
+                },
+                {
+                    "name": "1.2. Lỗi: Mật khẩu không đủ ký tự",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                { "key": "email", "value": "caoquocduydualeo@gmail.com", "type": "text" },
+                                { "key": "password", "value": "duy", "type": "text" },
+                                { "key": "confirmPassword", "value": "duy", "type": "text" },
+                                { "key": "fullName", "value": "Cao Quoc Duy", "type": "text" }
+                            ]
+                        },
+                        "url": { "raw": "{{base_url}}/verify", "host": ["{{base_url}}"], "path": ["verify"] },
+                        "description": "Bị chặn bởi StrnogPasswordValidator. Bấm Preview sẽ thấy báo lỗi trên HTML."
+                    }
+                },
+                {
+                    "name": "1.3. Lỗi: Xác nhận mật khẩu sai",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                { "key": "email", "value": "caoquocduydualeo@gmail.com", "type": "text" },
+                                { "key": "password", "value": "Quocduy123@123", "type": "text" },
+                                { "key": "confirmPassword", "value": "Quocduy123@456", "type": "text" },
+                                { "key": "fullName", "value": "Cao Quoc Duy", "type": "text" }
+                            ]
+                        },
+                        "url": { "raw": "{{base_url}}/verify", "host": ["{{base_url}}"], "path": ["verify"] },
+                        "description": "Bị chặn bởi RegosterCheckedValidator. Confirm Password khác Password."
+                    }
+                },
+                {
+                    "name": "1.4. Lỗi: Sai định dạng Email",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                { "key": "email", "value": "caoquocduydualeo", "type": "text" },
+                                { "key": "password", "value": "Quocduy123@123", "type": "text" },
+                                { "key": "confirmPassword", "value": "Quocduy123@123", "type": "text" },
+                                { "key": "fullName", "value": "Sai Email", "type": "text" }
+                            ]
+                        },
+                        "url": { "raw": "{{base_url}}/verify", "host": ["{{base_url}}"], "path": ["verify"] },
+                        "description": "Bị chặn bởi annotation @Email trong entity User."
+                    }
+                },
+                {
+                    "name": "1.5. Lỗi: Tên quá ngắn",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                { "key": "email", "value": "caoquocduydualeo@gmail.com", "type": "text" },
+                                { "key": "password", "value": "Quocduy123@123", "type": "text" },
+                                { "key": "confirmPassword", "value": "Quocduy123@123", "type": "text" },
+                                { "key": "fullName", "value": "Du", "type": "text" }
+                            ]
+                        },
+                        "url": { "raw": "{{base_url}}/verify", "host": ["{{base_url}}"], "path": ["verify"] },
+                        "description": "Họ tên nhỏ hơn 3 ký tự. Bị chặn bởi logic trong Controller."
+                    }
+                }
+            ]
+        },
+        {
+            "name": "2. Xác nhận Đăng ký (OTP)",
+            "item": [
+                {
+                    "name": "2.1. Hợp lệ (Lưu Database)",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                { "key": "email", "value": "caoquocduydualeo@gmail.com", "type": "text" },
+                                { "key": "password", "value": "Quocduy123@123", "type": "text" },
+                                { "key": "confirmPassword", "value": "Quocduy123@123", "type": "text" },
+                                { "key": "fullName", "value": "Cao Quoc Duy", "type": "text" },
+                                { "key": "OTP", "value": "111222", "type": "text" },
+                                { "key": "OTP_check", "value": "111222", "type": "text" }
+                            ]
+                        },
+                        "url": { "raw": "{{base_url}}/register", "host": ["{{base_url}}"], "path": ["register"] },
+                        "description": "Gửi OTP và OTP_check khớp nhau để lưu thẳng user vào Database."
+                    }
+                },
+                {
+                    "name": "2.2. Lỗi: Sai mã OTP",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                { "key": "email", "value": "caoquocduydualeo@gmail.com", "type": "text" },
+                                { "key": "password", "value": "Quocduy123@123", "type": "text" },
+                                { "key": "confirmPassword", "value": "Quocduy123@123", "type": "text" },
+                                { "key": "fullName", "value": "Cao Quoc Duy", "type": "text" },
+                                { "key": "OTP", "value": "111222", "type": "text" },
+                                { "key": "OTP_check", "value": "999999", "type": "text" }
+                            ]
+                        },
+                        "url": { "raw": "{{base_url}}/register", "host": ["{{base_url}}"], "path": ["register"] },
+                        "description": "Hai mã OTP lệch nhau. Trả về thông báo lỗi OTP."
+                    }
+                }
+            ]
+        },
+        {
+            "name": "3. Đăng nhập (Spring Security)",
+            "item": [
+                {
+                    "name": "3.1. 🔑 Login - Dành cho ADMIN",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                { "key": "username", "value": "admin@gmail.com", "type": "text" },
+                                { "key": "password", "value": "123456", "type": "text" }
+                            ]
+                        },
+                        "url": { "raw": "{{base_url}}/login", "host": ["{{base_url}}"], "path": ["login"] },
+                        "description": "Chạy API này để đóng vai Admin. Sau đó mới test thư mục 7 và 8."
+                    }
+                },
+                {
+                    "name": "3.2. 👤 Login - Dành cho KHÁCH HÀNG",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                { "key": "username", "value": "caoquocduydualeo@gmail.com", "type": "text" },
+                                { "key": "password", "value": "Quocduy123@123", "type": "text" }
+                            ]
+                        },
+                        "url": { "raw": "{{base_url}}/login", "host": ["{{base_url}}"], "path": ["login"] },
+                        "description": "Chạy API này để đóng vai Khách hàng. Sau đó mới test thư mục 5 và 6."
+                    }
+                },
+                {
+                    "name": "3.3. Lỗi: Sai thông tin đăng nhập",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                { "key": "username", "value": "admin@gmail.com", "type": "text" },
+                                { "key": "password", "value": "1234567", "type": "text" }
+                            ]
+                        },
+                        "url": { "raw": "{{base_url}}/login", "host": ["{{base_url}}"], "path": ["login"] },
+                        "description": "Nhập sai mật khẩu. Bị đá về trang /login?error."
+                    }
+                }
+            ]
+        },
+        {
+            "name": "4. Quản lý Profile & Lịch sử",
+            "item": [
+                {
+                    "name": "4.1. Đổi mật khẩu",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                { "key": "userId", "value": "1", "type": "text" },
+                                { "key": "lastPassword", "value": "123456", "type": "text" },
+                                { "key": "newPassword", "value": "1234567", "type": "text" }
+                            ]
+                        },
+                        "url": { "raw": "{{base_url}}/change-password", "host": ["{{base_url}}"], "path": ["change-password"] }
+                    }
+                },
+                {
+                    "name": "4.2. Cập nhật Profile (Upload Avatar)",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                { "key": "id", "value": "22", "type": "text" },
+                                { "key": "phone", "value": "0987654321", "type": "text" },
+                                { "key": "address", "value": "Quận 1, HCM", "type": "text" },
+                                { "key": "avatarFile", "type": "file" }
+                            ]
+                        },
+                        "url": { "raw": "{{base_url}}/update-profile", "host": ["{{base_url}}"], "path": ["update-profile"] }
+                    }
+                },
+                {
+                    "name": "4.3. Xem Lịch sử Đơn hàng",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": { "raw": "{{base_url}}/order-history", "host": ["{{base_url}}"], "path": ["order-history"] }
+                    }
+                }
+            ]
+        },
+        package com.example.food_store.service.impl;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+
+import com.example.food_store.domain.Order;
+import com.example.food_store.domain.OrderDetail;
+import com.example.food_store.domain.User;
+import com.example.food_store.repository.OrderDetailRepository;
+import com.example.food_store.repository.OrderRepository;
+
+@ExtendWith(MockitoExtension.class)
+class OrderServiceTest {
+
+    @Mock
+    private OrderRepository orderRepository;
+
+    @Mock
+    private OrderDetailRepository orderDetailRepository;
+
+    @InjectMocks
+    private OrderService orderService;
+
+    private Order order;
+    private User user;
+
+    @BeforeEach
+    void setUp() {
+
+        user = new User();
+        user.setId(1);
+
+        order = new Order();
+        order.setId(1);
+        order.setStatus("PENDING");
+        order.setUser(user);
+    }
+
+    @Test
+    void testFetchAllOrders() {
+
+        PageRequest pageable = PageRequest.of(0, 10);
+
+        Page<Order> page =
+                new PageImpl<>(Collections.singletonList(order));
+
+        when(orderRepository.findAll(pageable))
+                .thenReturn(page);
+
+        Page<Order> result =
+                orderService.fetchAllOrders(pageable);
+
+        assertEquals(1, result.getTotalElements());
+
+        verify(orderRepository)
+                .findAll(pageable);
+    }
+
+    @Test
+    void testFetchOrderById_Found() {
+
+        when(orderRepository.findById(1L))
+                .thenReturn(Optional.of(order));
+
+        Optional<Order> result =
+                orderService.fetchOrderById(1L);
+
+        assertTrue(result.isPresent());
+        assertEquals(1, result.get().getId());
+    }
+
+    @Test
+    void testFetchOrderById_NotFound() {
+
+        when(orderRepository.findById(99L))
+                .thenReturn(Optional.empty());
+
+        Optional<Order> result =
+                orderService.fetchOrderById(99L);
+
+        assertFalse(result.isPresent());
+    }
+
+    @Test
+    void testFetchOrderByUser() {
+
+        List<Order> orders =
+                Collections.singletonList(order);
+
+        when(orderRepository.findByUser(user))
+                .thenReturn(orders);
+
+        List<Order> result =
+                orderService.fetchOrderByUser(user);
+
+        assertEquals(1, result.size());
+
+        verify(orderRepository)
+                .findByUser(user);
+    }
+
+    @Test
+    void testDeleteById() {
+
+        OrderDetail detail1 = new OrderDetail();
+        detail1.setId(10);
+
+        OrderDetail detail2 = new OrderDetail();
+        detail2.setId(20);
+
+        order.setOrderDetails(
+                Arrays.asList(detail1, detail2));
+
+        when(orderRepository.findById(1L))
+                .thenReturn(Optional.of(order));
+
+        orderService.deleteById(1L);
+
+        verify(orderDetailRepository)
+                .deleteById(10L);
+
+        verify(orderDetailRepository)
+                .deleteById(20L);
+
+        verify(orderRepository)
+                .deleteById(1L);
+    }
+
+    @Test
+    void testDeleteById_OrderNotFound() {
+
+        when(orderRepository.findById(1L))
+                .thenReturn(Optional.empty());
+
+        orderService.deleteById(1L);
+
+        verify(orderRepository)
+                .deleteById(1L);
+
+        verify(orderDetailRepository, never())
+                .deleteById(anyLong());
+    }
+
+    @Test
+    void testUpdateOrder_Success() {
+
+        Order currentOrder = new Order();
+        currentOrder.setId(1);
+        currentOrder.setStatus("PENDING");
+
+        Order newOrder = new Order();
+        newOrder.setId(1);
+        newOrder.setStatus("COMPLETED");
+
+        when(orderRepository.findById(1L))
+                .thenReturn(Optional.of(currentOrder));
+
+        orderService.updateOrder(newOrder);
+
+        assertEquals(
+                "COMPLETED",
+                currentOrder.getStatus());
+
+        verify(orderRepository)
+                .save(currentOrder);
+    }
+
+    @Test
+    void testUpdateOrder_OrderNotFound() {
+
+        Order newOrder = new Order();
+        newOrder.setId(1);
+        newOrder.setStatus("COMPLETED");
+
+        when(orderRepository.findById(1L))
+                .thenReturn(Optional.empty());
+
+        orderService.updateOrder(newOrder);
+
+        verify(orderRepository, never())
+                .save(any(Order.class));
+    }
+},
+        {
+            "name": "6. Client - Giỏ hàng & Checkout",
+            "item": [
+                {
+                    "name": "6.1. Thêm vào giỏ (API JSON)",
+                    "request": {
+                        "method": "POST",
+                        "header": [ { "key": "Content-Type", "value": "application/json" } ],
+                        "body": { "mode": "raw", "raw": "{\n  \"productId\": 1,\n  \"quantity\": 1\n}" },
+                        "url": { "raw": "{{base_url}}/api/add-product-to-cart", "host": ["{{base_url}}"], "path": ["api", "add-product-to-cart"] }
+                    }
+                },
+                {
+                    "name": "6.2. Thêm vào giỏ (Từ trang Chi tiết)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+							{
+								"key": "Cookie",
+                			"value": "JSESSIONID={{session_id}}"
+							}
+						],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                { "key": "id", "value": "1", "type": "text" },
+                                { "key": "quantity", "value": "2", "type": "text" }
+                            ]
+                        },
+                        "url": { "raw": "{{base_url}}/add-product-from-view-detail", "host": ["{{base_url}}"], "path": ["add-product-from-view-detail"] }
+                    }
+                },
+                {
+                    "name": "6.3. Xóa Sản phẩm khỏi giỏ",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+							{
+								"key": "Cookie",
+                			"value": "JSESSIONID={{session_id}}"
+							}
+						],
+                        "url": { "raw": "{{base_url}}/delete-cart-product/2", "host": ["{{base_url}}"], "path": ["delete-cart-product", "2"] }
+                    }
+                },
+                {
+                    "name": "6.4. Đặt hàng (VNPay / COD)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+							{
+								"key": "Cookie",
+                			"value": "JSESSIONID={{session_id}}"
+							}
+						],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                { "key": "receiverName", "value": "Khách Test", "type": "text" },
+                                { "key": "receiverAddress", "value": "123 Đường Mới", "type": "text" },
+                                { "key": "receiverPhone", "value": "0912345678", "type": "text" },
+                                { "key": "paymentMethod", "value": "COD", "type": "text", "description": "Đổi thành VNPAY để test VNPay URL" },
+                                { "key": "totalPrice", "value": "150000", "type": "text" }
+                            ]
+                        },
+                        "url": { "raw": "{{base_url}}/place-order", "host": ["{{base_url}}"], "path": ["place-order"] }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "7. Admin - Quản lý Sản phẩm",
+            "item": [
+                {
+                    "name": "7.1. Danh sách Sản phẩm",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+								"key": "Cookie",
+                			"value": "JSESSIONID={{session_id}}"
+							}
+                        ],
+                        "url": { "raw": "{{base_url}}/admin/product?page=1", "host": ["{{base_url}}"], "path": ["admin", "product"], "query": [ { "key": "page", "value": "1" } ] }
+                    }
+                },
+                {
+                    "name": "7.2. Thêm Sản phẩm",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+								"key": "Cookie",
+                			"value": "JSESSIONID={{session_id}}"
+							}
+                        ],
+                        "body": {
+							"mode": "formdata",
+							"formdata": [
+								{ "key": "name", "value": "Cải xanh", "type": "text" },
+								{ "key": "price", "value": "15000", "type": "text" },
+								{ "key": "quantity", "value": "5", "type": "text" },
+								{ "key": "shortDesc", "value": "Cải tươi xanh", "type": "text" },
+								{ "key": "detailDesc", "value": "Trồng chuẩn sạch", "type": "text" },
+								{ "key": "source", "value": "Đà Lạt", "type": "text" },
+								{ "key": "unit", "value": "Bó", "type": "text" },
+								{ "key": "type", "value": "rau", "type": "text" },
+
+								{ "key": "target", "value": "Gia đình", "type": "text" },
+								{ "key": "customerTarget", "value": "All", "type": "text" },
+
+								{ "key": "productFile", "type": "file" }
+							]
+						},
+                        "url": { "raw": "{{base_url}}/admin/product/create", "host": ["{{base_url}}"], "path": ["admin", "product", "create"] }
+                    }
+                },
+                {
+                    "name": "7.3. Cập nhật Sản phẩm",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                { "key": "id", "value": "2", "type": "text" },
+                                { "key": "name", "value": "Bắp cải (Đã sửa)", "type": "text" },
+                                { "key": "price", "value": "20000", "type": "text" },
+                                { "key": "quantity", "value": "100", "type": "text" },
+                                { "key": "shortDesc", "value": "Bắp cải tươi", "type": "text" },
+                                { "key": "detailDesc", "value": "Trồng chuẩn sạch", "type": "text" },
+                                { "key": "source", "value": "Đà Lạt", "type": "text" },
+                                { "key": "unit", "value": "Bắp", "type": "text" },
+                                { "key": "type", "value": "rau", "type": "text" },
+                                { "key": "productFile", "type": "file" }
+                            ]
+                        },
+                        "url": { "raw": "{{base_url}}/admin/product/update", "host": ["{{base_url}}"], "path": ["admin", "product", "update"] }
+                    }
+                },
+                {
+                    "name": "7.4. Xóa Sản phẩm",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                { "key": "id", "value": "1", "type": "text" }
+                            ]
+                        },
+                        "url": { "raw": "{{base_url}}/admin/product/delete", "host": ["{{base_url}}"], "path": ["admin", "product", "delete"] }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "8. Admin - Quản lý Đơn hàng",
+            "item": [
+                {
+                    "name": "8.1. Danh sách Đơn hàng",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": { "raw": "{{base_url}}/admin/order?page=1", "host": ["{{base_url}}"], "path": ["admin", "order"], "query": [ { "key": "page", "value": "1" } ] }
+                    }
+                },
+                {
+                    "name": "8.2. Cập nhật Trạng thái",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                { "key": "id", "value": "1", "type": "text" },
+                                { "key": "status", "value": "Đang giao hàng", "type": "text" }
+                            ]
+                        },
+                        "url": { "raw": "{{base_url}}/admin/order/update", "host": ["{{base_url}}"], "path": ["admin", "order", "update"] }
+                    }
+                },
+                {
+                    "name": "8.3. Xóa Đơn hàng",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                { "key": "id", "value": "1", "type": "text" }
+                            ]
+                        },
+                        "url": { "raw": "{{base_url}}/admin/order/delete", "host": ["{{base_url}}"], "path": ["admin", "order", "delete"] }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "9. AI Proxy",
+            "item": [
+                {
+                    "name": "9.1. Gọi Gemini API Proxy",
+                    "request": {
+                        "method": "POST",
+                        "header": [ { "key": "Content-Type", "value": "application/json" } ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"contents\": [\n    {\n      \"parts\": [\n        {\n          \"text\": \"Gợi ý cho tôi 3 loại rau quả bổ sung Vitamin C tốt nhất.\"\n        }\n      ]\n    }\n  ]\n}"
+                        },
+                        "url": { "raw": "{{base_url}}/gemini-proxy", "host": ["{{base_url}}"], "path": ["gemini-proxy"] }
+                    }
+                }
+            ]
+        }
+    ],
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost:8080"
+        }
+    ]
+}
