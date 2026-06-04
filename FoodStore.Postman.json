@@ -297,9 +297,80 @@
                     }
                 }
             ]
+        },
+        {
+            "name": "6. Client - Giỏ hàng & Checkout",
+            "item": [
+                {
+                    "name": "6.1. Thêm vào giỏ (API JSON)",
+                    "request": {
+                        "method": "POST",
+                        "header": [ { "key": "Content-Type", "value": "application/json" } ],
+                        "body": { "mode": "raw", "raw": "{\n  \"productId\": 1,\n  \"quantity\": 1\n}" },
+                        "url": { "raw": "{{base_url}}/api/add-product-to-cart", "host": ["{{base_url}}"], "path": ["api", "add-product-to-cart"] }
+                    }
+                },
+                {
+                    "name": "6.2. Thêm vào giỏ (Từ trang Chi tiết)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+							{
+								"key": "Cookie",
+                			"value": "JSESSIONID={{session_id}}"
+							}
+						],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                { "key": "id", "value": "1", "type": "text" },
+                                { "key": "quantity", "value": "2", "type": "text" }
+                            ]
+                        },
+                        "url": { "raw": "{{base_url}}/add-product-from-view-detail", "host": ["{{base_url}}"], "path": ["add-product-from-view-detail"] }
+                    }
+                },
+                {
+                    "name": "6.3. Xóa Sản phẩm khỏi giỏ",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+							{
+								"key": "Cookie",
+                			"value": "JSESSIONID={{session_id}}"
+							}
+						],
+                        "url": { "raw": "{{base_url}}/delete-cart-product/2", "host": ["{{base_url}}"], "path": ["delete-cart-product", "2"] }
+                    }
+                },
+                {
+                    "name": "6.4. Đặt hàng (VNPay / COD)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+							{
+								"key": "Cookie",
+                			"value": "JSESSIONID={{session_id}}"
+							}
+						],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                { "key": "receiverName", "value": "Khách Test", "type": "text" },
+                                { "key": "receiverAddress", "value": "123 Đường Mới", "type": "text" },
+                                { "key": "receiverPhone", "value": "0912345678", "type": "text" },
+                                { "key": "paymentMethod", "value": "COD", "type": "text", "description": "Đổi thành VNPAY để test VNPay URL" },
+                                { "key": "totalPrice", "value": "150000", "type": "text" }
+                            ]
+                            },
+                        "url": { "raw": "{{base_url}}/place-order", "host": ["{{base_url}}"], "path": ["place-order"] }
+                    }
+                }
+            ]
         }
         
     ],
+
     "variable": [
         {
             "key": "base_url",
