@@ -367,6 +367,92 @@
                     }
                 }
             ]
+        },
+        {
+            "name": "7. Admin - Quản lý Sản phẩm",
+            "item": [
+                {
+                    "name": "7.1. Danh sách Sản phẩm",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+								"key": "Cookie",
+                			"value": "JSESSIONID={{session_id}}"
+							}
+                        ],
+                        "url": { "raw": "{{base_url}}/admin/product?page=1", "host": ["{{base_url}}"], "path": ["admin", "product"], "query": [ { "key": "page", "value": "1" } ] }
+                    }
+                },
+                {
+                    "name": "7.2. Thêm Sản phẩm",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+								"key": "Cookie",
+                			"value": "JSESSIONID={{session_id}}"
+							}
+                        ],
+                        "body": {
+							"mode": "formdata",
+							"formdata": [
+								{ "key": "name", "value": "Cải xanh", "type": "text" },
+								{ "key": "price", "value": "15000", "type": "text" },
+								{ "key": "quantity", "value": "5", "type": "text" },
+								{ "key": "shortDesc", "value": "Cải tươi xanh", "type": "text" },
+								{ "key": "detailDesc", "value": "Trồng chuẩn sạch", "type": "text" },
+								{ "key": "source", "value": "Đà Lạt", "type": "text" },
+								{ "key": "unit", "value": "Bó", "type": "text" },
+								{ "key": "type", "value": "rau", "type": "text" },
+
+								{ "key": "target", "value": "Gia đình", "type": "text" },
+								{ "key": "customerTarget", "value": "All", "type": "text" },
+
+								{ "key": "productFile", "type": "file" }
+							]
+						},
+                        "url": { "raw": "{{base_url}}/admin/product/create", "host": ["{{base_url}}"], "path": ["admin", "product", "create"] }
+                    }
+                },
+                {
+                    "name": "7.3. Cập nhật Sản phẩm",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                { "key": "id", "value": "2", "type": "text" },
+                                { "key": "name", "value": "Bắp cải (Đã sửa)", "type": "text" },
+                                { "key": "price", "value": "20000", "type": "text" },
+                                { "key": "quantity", "value": "100", "type": "text" },
+                                { "key": "shortDesc", "value": "Bắp cải tươi", "type": "text" },
+                                { "key": "detailDesc", "value": "Trồng chuẩn sạch", "type": "text" },
+                                { "key": "source", "value": "Đà Lạt", "type": "text" },
+                                { "key": "unit", "value": "Bắp", "type": "text" },
+                                { "key": "type", "value": "rau", "type": "text" },
+                                { "key": "productFile", "type": "file" }
+                            ]
+                        },
+                        "url": { "raw": "{{base_url}}/admin/product/update", "host": ["{{base_url}}"], "path": ["admin", "product", "update"] }
+                    }
+                },
+                {
+                    "name": "7.4. Xóa Sản phẩm",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                { "key": "id", "value": "1", "type": "text" }
+                            ]
+                        },
+                        "url": { "raw": "{{base_url}}/admin/product/delete", "host": ["{{base_url}}"], "path": ["admin", "product", "delete"] }
+                    }
+                }
+            ]
         }
         
     ],
