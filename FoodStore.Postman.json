@@ -453,8 +453,49 @@
                     }
                 }
             ]
+        },
+        {
+            "name": "8. Admin - Quản lý Đơn hàng",
+            "item": [
+                {
+                    "name": "8.1. Danh sách Đơn hàng",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": { "raw": "{{base_url}}/admin/order?page=1", "host": ["{{base_url}}"], "path": ["admin", "order"], "query": [ { "key": "page", "value": "1" } ] }
+                    }
+                },
+                {
+                    "name": "8.2. Cập nhật Trạng thái",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                { "key": "id", "value": "1", "type": "text" },
+                                { "key": "status", "value": "Đang giao hàng", "type": "text" }
+                            ]
+                        },
+                        "url": { "raw": "{{base_url}}/admin/order/update", "host": ["{{base_url}}"], "path": ["admin", "order", "update"] }
+                    }
+                },
+                {
+                    "name": "8.3. Xóa Đơn hàng",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                { "key": "id", "value": "1", "type": "text" }
+                            ]
+                        },
+                        "url": { "raw": "{{base_url}}/admin/order/delete", "host": ["{{base_url}}"], "path": ["admin", "order", "delete"] }
+                    }
+                }
+            ]
         }
-        
     ],
 
     "variable": [
