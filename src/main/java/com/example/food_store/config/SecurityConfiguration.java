@@ -68,7 +68,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorize -> authorize
                 .dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.INCLUDE)
                 .permitAll()
-                .requestMatchers("/product/**", "/", "/password/**", "/login/**","/client/**", "/css/**","/js/**","/register/**","/products/**","/images/**", "/send-request-to-mail","reset-password/**","/process-reset-password/**", "/verify/**","/gemini-proxy", "/test-Gemini")
+                .requestMatchers("/product/**", "/", "/password/**", "/login/**","/client/**", "/css/**","/js/**","/register/**","/products/**","/images/**", "/send-request-to-mail","reset-password/**","/process-reset-password/**", "/verify/**","/gemini-proxy", "/test-Gemini","/api/**")
                 .permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated())

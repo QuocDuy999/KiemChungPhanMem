@@ -8,6 +8,11 @@ pipeline {
                 bat '.\\mvnw.cmd clean verify'
             }
         }
+        stage('Run API Tests') {
+            steps {
+                bat 'newman run postman/FoodStore.Postman.json'
+            }
+        }
 
         stage('SonarQube Analysis') {
             steps {
