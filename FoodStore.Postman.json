@@ -495,9 +495,66 @@
                     }
                 }
             ]
+        },
+   {
+            "name": "9. Kiểm thử Phân quyền & Biên dữ liệu",
+	"item": [
+                {
+                    "name": "9.1. Lỗi Phân Quyền: Khách cố tình xóa sản phẩm",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            { "key": "Cookie", "value": "JSESSIONID={{session_id}}", "description": "Dùng session của Khách hàng vừa login ở bước 3.2" }
+                        ],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                { "key": "id", "value": "2", "type": "text" }
+                            ]
+                        },
+                        "url": { "raw": "{{base_url}}/admin/product/delete", "host": ["{{base_url}}"], "path": ["admin", "product", "delete"] },
+                        "description": "Dùng quyền khách hàng để xóa sản phẩm của Admin nhằm test tính bảo mật (Spring Security)."
+                    }
+                },
+                {
+                    "name": "9.2. Lỗi Biên: Admin thêm sản phẩm giá trị âm",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            { "key": "Cookie", "value": "JSESSIONID={{session_id}}" }
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                { "key": "name", "value": "Sản phẩm lỗi biên", "type": "text" },
+                                { "key": "price", "value": "-50000", "type": "text", "description": "Giá âm" },
+                                { "key": "quantity", "value": "-10", "type": "text", "description": "Số lượng âm" },
+                                { "key": "type", "value": "rau", "type": "text" }
+                            ]
+                        },
+                        "url": { "raw": "{{base_url}}/admin/product/create", "host": ["{{base_url}}"], "path": ["admin", "product", "create"] },
+                        "description": "Test bộ lọc Validation đầu vào (@Min) của backend Spring Boot."
+                    }
+                },
+                {
+                    "name": "9.3. Lỗi Biên: Thêm vào giỏ số lượng âm",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            { "key": "Content-Type", "value": "application/json" },
+                            { "key": "Cookie", "value": "JSESSIONID={{session_id}}" }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"productId\": 1,\n  \"quantity\": -5\n}"
+                        },
+                        "url": { "raw": "{{base_url}}/api/add-product-to-cart", "host": ["{{base_url}}"], "path": ["api", "add-product-to-cart"] },
+                        "description": "Cố tình truyền số lượng âm qua payload JSON xem hệ thống có trừ lùi giỏ hàng trái phép không."
+                    }
+                }
+            ]
         }
     ],
-
     "variable": [
         {
             "key": "base_url",
