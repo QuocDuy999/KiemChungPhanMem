@@ -88,5 +88,30 @@ void testSaveCart() {
     assertNotNull(result);
     assertEquals(5, result.getSum());
 }
+@Test
+    void testSaveCart_Boundary_ZeroSum() {
 
+        cart.setSum(0); 
+
+        when(cartRepository.save(cart))
+                .thenReturn(cart);
+
+        Cart result = cartService.saveCart(cart);
+
+        assertNotNull(result);
+        assertEquals(0, result.getSum());
+    }
+@Test
+    void testSaveCart_UpdateNewSum() {
+
+        cart.setSum(10); 
+
+        when(cartRepository.save(cart))
+                .thenReturn(cart);
+
+        Cart result = cartService.saveCart(cart);
+
+        assertNotNull(result);
+        assertEquals(10, result.getSum());
+    }
 }
