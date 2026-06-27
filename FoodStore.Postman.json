@@ -549,8 +549,8 @@
                             "raw": "{\n  \"productId\": 1,\n  \"quantity\": -5\n}"
                         },
                         "url": { "raw": "{{base_url}}/api/add-product-to-cart", "host": ["{{base_url}}"], "path": ["api", "add-product-to-cart"] },
-                        "description": "Cố tình truyền số lượng âm qua payload JSON xem hệ thống có trừ lùi giỏ hàng trái phép không."
-                    }
+                        "description": "Cố tình truyền số lượng âm qua payload JSON xem hệ thống có trừ lùi giỏ hàng trái phép không."}
+                    
                 }
             ]
         }
