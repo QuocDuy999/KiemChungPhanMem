@@ -89,6 +89,9 @@ public class OrderController extends BaseController {
     public String getUpdateOrderPage(Model model, @PathVariable long id) {
         log.info("Request to /admin/order/update/{id}");
         Optional<Order> currentOrder = this.orderService.fetchOrderById(id);
+        if (currentOrder.isEmpty()) {
+            return REDIRECT_ORDER;
+        }
         model.addAttribute("newOrder", currentOrder.get());
         return "admin/order/update";
     }
