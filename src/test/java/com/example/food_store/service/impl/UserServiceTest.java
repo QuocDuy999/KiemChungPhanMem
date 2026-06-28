@@ -337,4 +337,18 @@ class UserServiceTest {
         verify(orderRepository)
                 .count();
     }
+    @Test
+    void testGetUserById_NotFound() {
+
+        when(userRepository.findById(99L))
+                .thenReturn(null);
+
+        User result =
+                userService.getUserById(99L);
+
+        assertNull(result);
+
+        verify(userRepository)
+                .findById(99L);
+    }
 }

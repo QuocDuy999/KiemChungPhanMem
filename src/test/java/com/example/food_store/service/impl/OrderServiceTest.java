@@ -197,4 +197,43 @@ class OrderServiceTest {
         verify(orderRepository, never())
                 .save(any(Order.class));
     }
+    @Test
+    void testFetchOrderByUser_EmptyList() {
+
+        when(orderRepository.findByUser(user))
+                .thenReturn(Collections.emptyList());
+
+        List<Order> result =
+                orderService.fetchOrderByUser(user);
+
+        assertEquals(0, result.size());
+
+        verify(orderRepository)
+                .findByUser(user);
+    }
+
+    @Test
+    void testUpdateOrder_ToCancelled() {
+
+        Order currentOrder = new Order();
+        currentOrder.setId(1);
+        currentOrder.setStatus("PENDING");
+
+        Order newOrder = new Order();
+        newOrder.setId(1);
+        newOrder.setStatus("CANCELLED");
+
+        when(orderRepository.findById(1L))
+                .thenReturn(Optional.of(currentOrder));
+
+        orderService.updateOrder(newOrder);
+
+        assertEquals(
+                "CANCELLED",
+                currentOrder.getStatus());
+
+        verify(orderRepository)
+                .save(currentOrder);
+    }
+    
 }

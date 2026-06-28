@@ -368,5 +368,21 @@ void testHandleUpdateCartBeforeCheckout() {
     verify(cartDetailRepository)
             .save(currentDetail);
 }
+@Test
+void testRemoveCartDetail_NotFound() {
 
+    when(cartDetailRepository.findById(99L))
+            .thenReturn(Optional.empty());
+
+    productService.handleRemoveCartDetail(99L, session);
+
+    verify(cartRepository, never())
+            .save(any(Cart.class));
+
+    verify(cartRepository, never())
+            .deleteById(anyLong());
+
+    verify(session, never())
+            .setAttribute(anyString(), any());
+}
 }

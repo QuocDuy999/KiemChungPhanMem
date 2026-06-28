@@ -25,6 +25,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 @RequiredArgsConstructor
 public class OrderController extends BaseController {
+    // Đường dẫn chuyển hướng đến trang quản lý đơn hàng
+    private static final String REDIRECT_ORDER = "redirect:/admin/order";
     private final OrderService orderService;
 
     @GetMapping("/admin/order")
@@ -54,12 +56,24 @@ public class OrderController extends BaseController {
 
     @GetMapping("/admin/order/{id}")
     public String getMethodName(@PathVariable long id, Model model) {
-        log.info("Request to /admin/order/{id}");
-        Order order = this.orderService.fetchOrderById(id).get();
-        List<OrderDetail> orderDetails = order.getOrderDetails();
+        log.info("Request to /admin/order/{}", id);
+
+        // Lấy thông tin đơn hàng theo ID
+        Optional<Order> optionalOrder = this.orderService.fetchOrderById(id);
+
+        // Kiểm tra đơn hàng có tồn tại hay không trước khi lấy dữ liệu
+        if (optionalOrder.isEmpty()) {
+            // Nếu không tìm thấy đơn hàng thì quay về trang danh sách
+            return REDIRECT_ORDER;
+        }
+
+        // Lấy đối tượng Order sau khi đã xác nhận tồn tại
+        Order order = optionalOrder.get();
+
         model.addAttribute("id", id);
-        model.addAttribute("orderDetails", orderDetails);
         model.addAttribute("order", order);
+        model.addAttribute("orderDetails", order.getOrderDetails());
+
         return "admin/order/detail";
     }
 
@@ -75,24 +89,25 @@ public class OrderController extends BaseController {
     public String getUpdateOrderPage(Model model, @PathVariable long id) {
         log.info("Request to /admin/order/update/{id}");
         Optional<Order> currentOrder = this.orderService.fetchOrderById(id);
+        if (currentOrder.isEmpty()) {
+            return REDIRECT_ORDER;
+        }
         model.addAttribute("newOrder", currentOrder.get());
         return "admin/order/update";
     }
-    
+
     @PostMapping("/admin/order/delete")
     public String postDeleteOrder(@ModelAttribute("newOrder") Order order) {
         log.info("Request to /admin/order/delete");
         this.orderService.deleteById(order.getId());
-        return "redirect:/admin/order";
-
+        return REDIRECT_ORDER;
     }
 
     @PostMapping("/admin/order/update")
     public String handleUpdateOrder(@ModelAttribute("newOrder") Order order) {
         log.info("Request to /admin/order/update");
         this.orderService.updateOrder(order);
-        return "redirect:/admin/order";
+        return REDIRECT_ORDER;
     }
-    
 
 }
