@@ -62,7 +62,7 @@ public class ProductController extends BaseController {
         model.addAttribute("newPrd", new Product());
         return "admin/product/create";
     }
-    
+
     @GetMapping("/admin/product/delete/{id}")
     public String getDeleteProductPage(Model model, @PathVariable long id) {
         log.info("Request to /admin/product/delete/{id}");
@@ -74,10 +74,13 @@ public class ProductController extends BaseController {
     @GetMapping("/admin/product/{id}")
     public String getProductDetailPage(Model model, @PathVariable long id) {
         log.info("Request to /admin/product/{id}");
-        Product pr = this.productService.fetchProductById(id).get();
-        model.addAttribute("product", pr);
-        model.addAttribute("id", id);
-        return "admin/product/detail";
+        Optional<Product> optionalProduct = this.productService.fetchProductById(id);
+        if (optionalProduct.isPresent()) {
+            model.addAttribute("product", optionalProduct.get());
+            model.addAttribute("id", id);
+            return "admin/product/detail";
+        }
+        return "redirect:/admin/product";
 
     }
 
@@ -88,9 +91,10 @@ public class ProductController extends BaseController {
         model.addAttribute("newProduct", currentProduct.get());
         return "admin/product/update";
     }
-    
+
     @PostMapping("/admin/product/create")
-    public String createProduct(@ModelAttribute("newPrd") @Valid Product prd, BindingResult newBindingResult, @RequestParam("productFile") MultipartFile file) {
+    public String createProduct(@ModelAttribute("newPrd") @Valid Product prd, BindingResult newBindingResult,
+            @RequestParam("productFile") MultipartFile file) {
         log.info("Request to /admin/product/create");
         if (newBindingResult.hasErrors()) {
             return "admin/product/create";
@@ -102,7 +106,6 @@ public class ProductController extends BaseController {
 
     }
 
-
     @PostMapping("/admin/product/delete")
     public String postDeleteProduct(Model model, @ModelAttribute("newProduct") Product prd) {
         log.info("Request to /admin/product/delete");
@@ -111,7 +114,8 @@ public class ProductController extends BaseController {
     }
 
     @PostMapping("/admin/product/update")
-    public String handleUpdateProduct(@ModelAttribute("newProduct") @Valid Product prd, BindingResult newProducBindingResult, @RequestParam("productFile") MultipartFile file) {
+    public String handleUpdateProduct(@ModelAttribute("newProduct") @Valid Product prd,
+            BindingResult newProducBindingResult, @RequestParam("productFile") MultipartFile file) {
         log.info("Request to /admin/product/update");
         if (newProducBindingResult.hasErrors()) {
             return "admin/product/update";
