@@ -88,8 +88,11 @@ public class ProductController extends BaseController {
     public String getUpdateProductPage(Model model, @PathVariable long id) {
         log.info("Request to /admin/product/update/{id}");
         Optional<Product> currentProduct = this.productService.fetchProductById(id);
-        model.addAttribute("newProduct", currentProduct.get());
-        return "admin/product/update";
+        if (currentProduct.isPresent()) {
+            model.addAttribute("newProduct", currentProduct.get());
+            return "admin/product/update";
+        }
+        return "redirect:/admin/product";
     }
 
     @PostMapping("/admin/product/create")
