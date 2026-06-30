@@ -1,7 +1,0 @@
-*   [33m971ea7b[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m KAN-37 Fix lỗi File CartService.java:Add input validation for CartService
-[31m|[m[32m\[m  
-[31m|[m * [33m879846e[m KAN-32 Fix Lỗi File HomePageController.java: A NullPointerException could be thrown; getFieldError() can return null.
-[31m|[m * [33m9a3c159[m KAN-31 Fix Lỗi File UserController.java: Đã Fix Lỗi A NullPointerException could be thrown; getFieldError() can return null.
-* [32m|[m [33m7db08fe[m KAN-37 Fix lỗi File CartService.java: Add input validation for CartService
-[32m|[m[32m/[m  
-* [33mbd04bff[m KAN-35 Bổ sung BVA cho CartServiceTest

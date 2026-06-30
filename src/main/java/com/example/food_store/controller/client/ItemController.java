@@ -49,13 +49,23 @@ public class ItemController extends BaseController {
     @GetMapping("/product/{id}")
     public String getProductPage(Model model, @PathVariable long id) {
         log.info("Request to /product/{id}");
-        Product prd = this.productService.fetchProductById(id).get();
+
+        Optional<Product> productOptional = this.productService.fetchProductById(id);
+
+        if (productOptional.isEmpty()) {
+            return "redirect:/";
+            // hoặc return "error/404";
+        }
+
+        Product prd = productOptional.get();
+
         long number_1 = this.productService.getQuantitybyType("rau");
         long number_2 = this.productService.getQuantitybyType("cu");
         long number_3 = this.productService.getQuantitybyType("trai-cay");
         long number_4 = this.productService.getQuantitybyType("thuc-pham-giau-protein");
         long number_5 = this.productService.getQuantitybyType("thuc-uong");
         Long number_6 = this.productService.getQuantitybyType("thuc-pham-chua-tinh-bot");
+
         model.addAttribute("number_1", number_1);
         model.addAttribute("number_2", number_2);
         model.addAttribute("number_3", number_3);
@@ -66,7 +76,6 @@ public class ItemController extends BaseController {
 
         return "client/product/detail";
     }
-
     
     @GetMapping("/cart")
     public String getCartPage(Model model, HttpServletRequest request) {
