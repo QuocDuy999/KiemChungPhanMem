@@ -208,9 +208,15 @@ public class HomePageController extends BaseController {
             BindingResult bindingResult, Model model) {
         log.info("Request to /change-password");
         if (bindingResult.hasErrors()) {
-            String error = bindingResult.getFieldError().getDefaultMessage();
-            model.addAttribute("errorNewpassword", error);
-            return "client/homepage/changePassword";
+            String error = "Dữ liệu không hợp lệ";
+
+            FieldError fieldError = bindingResult.getFieldError();
+            if (fieldError != null) {
+                error = fieldError.getDefaultMessage();
+            }
+
+        model.addAttribute("errorNewpassword", error);
+        return "client/homepage/changePassword";
         }
         Long userId = changePasswordDTO.getUserId();
         String lastPassword = changePasswordDTO.getLastPassword();
