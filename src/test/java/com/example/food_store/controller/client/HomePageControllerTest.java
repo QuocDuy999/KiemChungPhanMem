@@ -17,13 +17,18 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.FieldError;
 
 import com.example.food_store.domain.User;
 import com.example.food_store.domain.dto.ChangePasswordDTO;
-import com.example.food_store.service.impl.*;
+import com.example.food_store.messaging.producer.EmailProducer;
+import com.example.food_store.service.impl.OrderService;
+import com.example.food_store.service.impl.ProductService;
+import com.example.food_store.service.impl.UploadService;
+import com.example.food_store.service.impl.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -32,16 +37,35 @@ import jakarta.servlet.http.HttpSession;
 @MockitoSettings(strictness = Strictness.LENIENT)
 class HomePageControllerTest {
 
-    @Mock private ProductService productService;
-    @Mock private UserService userService;
-    @Mock private OrderService orderService;
-    @Mock private UploadService uploadService;
-    @Mock private PasswordEncoder passwordEncoder;
+    @Mock
+    private ProductService productService;
 
-    @Mock private Model model;
-    @Mock private BindingResult bindingResult;
-    @Mock private HttpServletRequest request;
-    @Mock private HttpSession session;
+    @Mock
+    private UserService userService;
+
+    @Mock
+    private OrderService orderService;
+
+    @Mock
+    private UploadService uploadService;
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
+    @Mock
+    private EmailProducer emailProducer;
+
+    @Mock
+    private Model model;
+
+    @Mock
+    private BindingResult bindingResult;
+
+    @Mock
+    private HttpServletRequest request;
+
+    @Mock
+    private HttpSession session;
 
     @InjectMocks
     private HomePageController homePageController;
@@ -57,6 +81,7 @@ class HomePageControllerTest {
     }
 
     // ================= HOME =================
+
     @Test
     void getHomePage_ShouldReturnView() {
 
@@ -78,6 +103,7 @@ class HomePageControllerTest {
     }
 
     // ================= REGISTER =================
+
     @Test
     void getRegisterPage_ShouldReturnView() {
         assertEquals("client/auth/register",
@@ -85,6 +111,7 @@ class HomePageControllerTest {
     }
 
     // ================= LOGIN =================
+
     @Test
     void getLoginPage_ShouldReturnView() {
         assertEquals("client/auth/login",
@@ -92,11 +119,13 @@ class HomePageControllerTest {
     }
 
     // ================= ORDER =================
+
     @Test
     void getOrderHistory_ShouldReturnView() {
 
         when(request.getSession(false)).thenReturn(session);
         when(session.getAttribute("id")).thenReturn(1L);
+
         when(orderService.fetchOrderByUser(any(User.class)))
                 .thenReturn(new ArrayList<>());
 
@@ -106,11 +135,13 @@ class HomePageControllerTest {
     }
 
     // ================= PROFILE =================
+
     @Test
     void getProfileView_ShouldReturnView() {
 
         when(request.getSession(false)).thenReturn(session);
         when(session.getAttribute("id")).thenReturn(1L);
+
         when(userService.getUserById(1L)).thenReturn(user);
 
         String view = homePageController.getProfileView(request, model);
@@ -118,16 +149,54 @@ class HomePageControllerTest {
         assertEquals("client/homepage/viewProfile", view);
     }
 
-    // ================= CHANGE PASSWORD SUCCESS =================
     @Test
-    void changePassword_ShouldSuccess() {
+    void getProfileUpdate_ShouldReturnUpdatePage() {
 
-        when(request.getSession()).thenReturn(session);
         when(session.getAttribute("id")).thenReturn(1L);
         when(userService.getUserById(1L)).thenReturn(user);
 
-        when(passwordEncoder.matches(anyString(), anyString())).thenReturn(true);
-        when(passwordEncoder.encode(anyString())).thenReturn("hashed");
+        String view = homePageController.getProfileUpdate(session, model, 1L);
+
+        assertEquals("client/homepage/updateProfile", view);
+
+        verify(model).addAttribute("id", 1L);
+        verify(model).addAttribute("newUser", user);
+    }
+
+    @Test
+    void getProfileUpdate_ShouldReturnNotMatch_WhenIdDifferent() {
+
+        when(session.getAttribute("id")).thenReturn(2L);
+
+        String view = homePageController.getProfileUpdate(session, model, 1L);
+
+        assertEquals("not-match", view);
+    }
+
+    @Test
+    void getProfileUpdate_ShouldReturnNotMatch_WhenSessionNull() {
+
+        when(session.getAttribute("id")).thenReturn(null);
+
+        String view = homePageController.getProfileUpdate(session, model, 1L);
+
+        assertEquals("not-match", view);
+    }
+
+    // ================= CHANGE PASSWORD =================
+
+    @Test
+    void changePassword_ShouldSuccess() {
+
+        when(bindingResult.hasErrors()).thenReturn(false);
+
+        when(userService.getUserById(1L)).thenReturn(user);
+
+        when(passwordEncoder.matches(anyString(), anyString()))
+                .thenReturn(true);
+
+        when(passwordEncoder.encode(anyString()))
+                .thenReturn("hashed");
 
         ChangePasswordDTO dto = ChangePasswordDTO.builder()
                 .userId(1L)
@@ -138,17 +207,19 @@ class HomePageControllerTest {
         String view = homePageController.changePassword(dto, bindingResult, model);
 
         assertEquals("redirect:/success-page", view);
+
+        verify(userService).handleSaveUser(any(User.class));
     }
 
-    // ================= CHANGE PASSWORD FAIL =================
     @Test
     void changePassword_ShouldFail() {
 
-        when(request.getSession()).thenReturn(session);
-        when(session.getAttribute("id")).thenReturn(1L);
+        when(bindingResult.hasErrors()).thenReturn(false);
+
         when(userService.getUserById(1L)).thenReturn(user);
 
-        when(passwordEncoder.matches(anyString(), anyString())).thenReturn(false);
+        when(passwordEncoder.matches(anyString(), anyString()))
+                .thenReturn(false);
 
         ChangePasswordDTO dto = ChangePasswordDTO.builder()
                 .userId(1L)
@@ -159,5 +230,47 @@ class HomePageControllerTest {
         String view = homePageController.changePassword(dto, bindingResult, model);
 
         assertEquals("client/homepage/changePassword", view);
+
+        verify(model).addAttribute("error", "Mật khẩu không chính xác");
+    }
+
+    @Test
+    void changePassword_ShouldReturnValidationError() {
+
+        when(bindingResult.hasErrors()).thenReturn(true);
+
+        FieldError fieldError = new FieldError(
+                "changePasswordDTO",
+                "newPassword",
+                "Invalid password");
+
+        when(bindingResult.getFieldError()).thenReturn(fieldError);
+
+        ChangePasswordDTO dto = ChangePasswordDTO.builder()
+                .userId(1L)
+                .build();
+
+        String view = homePageController.changePassword(dto, bindingResult, model);
+
+        assertEquals("client/homepage/changePassword", view);
+
+        verify(model).addAttribute("errorNewpassword", "Invalid password");
+    }
+
+    @Test
+    void changePassword_ShouldReturnDefaultError_WhenFieldErrorNull() {
+
+        when(bindingResult.hasErrors()).thenReturn(true);
+        when(bindingResult.getFieldError()).thenReturn(null);
+
+        ChangePasswordDTO dto = ChangePasswordDTO.builder()
+                .userId(1L)
+                .build();
+
+        String view = homePageController.changePassword(dto, bindingResult, model);
+
+        assertEquals("client/homepage/changePassword", view);
+
+        verify(model).addAttribute("errorNewpassword", "Dữ liệu không hợp lệ");
     }
 }
