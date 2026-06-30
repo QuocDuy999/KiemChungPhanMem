@@ -26,11 +26,20 @@ public class CartService implements ICartService {
     
     @Override
     public Cart findByUser(User user){
+        if (user == null) {
+            throw new IllegalArgumentException("User cannot be null");
+        }
         return cartRepository.findByUser(user);
     }
 
     @Override
     public Cart saveCart(Cart cart){
+        if (cart == null) {
+            throw new IllegalArgumentException("Cart cannot be null");
+        }
+        if (cart.getSum() < 0) {
+            throw new IllegalArgumentException("Cart sum cannot be negative");
+        }
         return this.cartRepository.save(cart);
     }
 }
