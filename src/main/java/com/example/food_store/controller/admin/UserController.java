@@ -176,7 +176,12 @@ public class UserController extends BaseController {
     public String getProcessResetPassword(@ModelAttribute("ResetPasswordDTO") @Valid ResetPasswordDTO ResetPasswordDTO, BindingResult bindingResult, Model model) {
         log.info("Request to /process-reset-password");
         if (bindingResult.hasErrors()) {
-            String error = bindingResult.getFieldError().getDefaultMessage();
+            String error = "Dữ liệu không hợp lệ";
+
+            FieldError fieldError = bindingResult.getFieldError();
+            if (fieldError != null) {
+                error = fieldError.getDefaultMessage();
+            }
             model.addAttribute("errorNewpassword", error);
             return "client/homepage/resetPassword";
         }
