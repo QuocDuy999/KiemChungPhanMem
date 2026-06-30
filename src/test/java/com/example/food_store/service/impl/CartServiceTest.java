@@ -114,4 +114,40 @@ void testSaveCart() {
         assertNotNull(result);
         assertEquals(10, result.getSum());
     }
+@Test
+    void testSaveCart_Boundary_NegativeSum_ShouldThrowException() {
+        cart.setSum(-1); 
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            cartService.saveCart(cart);
+        });
+    }
+
+@Test
+    void testGetCartByID_Boundary_InvalidID_ReturnsNull() {
+        when(cartRepository.findById(-1L))
+                .thenReturn(Optional.empty());
+
+        Cart result = cartService.getCartByID(-1L);
+
+        assertNull(result);
+    }
+
+@Test
+    void testFindByUser_NullUser_ShouldThrowException() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            cartService.findByUser(null);
+        });
+    }
+
+@Test
+    void testSaveCart_DatabaseError_ShouldHandleException() {
+        when(cartRepository.save(cart))
+                .thenThrow(new RuntimeException("MySQL connection timeout"));
+
+        assertThrows(RuntimeException.class, () -> {
+            cartService.saveCart(cart);
+        });
+    }
+
 }
