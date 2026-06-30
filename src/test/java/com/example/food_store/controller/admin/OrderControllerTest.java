@@ -2,6 +2,7 @@ package com.example.food_store.controller.admin;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
@@ -125,5 +126,57 @@ class OrderControllerTest {
         assertEquals("redirect:/admin/order", view);
 
         verify(orderService, times(1)).updateOrder(order);
+    }
+    @Test
+    void getDashboard_PageEmpty_ShouldReturnOrderPage() {
+
+        Page<Order> page = new PageImpl<>(List.of(order));
+
+        when(orderService.fetchAllOrders(any(Pageable.class)))
+                .thenReturn(page);
+
+        String view = orderController.getDashboard(model, Optional.empty());
+
+        assertEquals("admin/order/show", view);
+
+        verify(orderService).fetchAllOrders(any(Pageable.class));
+    }
+
+    @Test
+    void getDashboard_InvalidPage_ShouldReturnNotMatch() {
+
+        String view = orderController.getDashboard(model, Optional.of("abc"));
+
+        assertEquals("not-match", view);
+
+        verify(model).addAttribute(eq("errorMessage"), anyString());
+
+        verify(orderService, never()).fetchAllOrders(any(Pageable.class));
+    }
+
+    @Test
+    void getOrderDetail_NotFound_ShouldRedirect() {
+
+        when(orderService.fetchOrderById(1L))
+                .thenReturn(Optional.empty());
+
+        String view = orderController.getMethodName(1L, model);
+
+        assertEquals("redirect:/admin/order", view);
+
+        verify(model, never()).addAttribute(eq("order"), any());
+    }
+
+    @Test
+    void getUpdatePage_NotFound_ShouldRedirect() {
+
+        when(orderService.fetchOrderById(1L))
+                .thenReturn(Optional.empty());
+
+        String view = orderController.getUpdateOrderPage(model, 1L);
+
+        assertEquals("redirect:/admin/order", view);
+
+        verify(model, never()).addAttribute(eq("newOrder"), any());
     }
 }
