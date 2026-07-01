@@ -42,6 +42,6 @@ class StrnogPasswordValidatorTest {
 
     @Test
     void isValid_ShouldReturnFalse_WhenMissingSpecialCharacter() {
-        assertFalse(validator.isValid("Abcd1234"));
+        assertFalse(validator.isValid("Abcd1234", null));
     }
 }
