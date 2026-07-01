@@ -3,7 +3,8 @@ package com.example.food_store.annotation.validator;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,7 +37,9 @@ class RegosterCheckedValidatorTest {
     @BeforeEach
     void setUp() {
         validator = new RegosterCheckedValidator(userService);
+    }
 
+    private void mockConstraintViolation() {
         when(context.buildConstraintViolationWithTemplate(anyString()))
                 .thenReturn(violationBuilder);
 
@@ -72,6 +75,8 @@ class RegosterCheckedValidatorTest {
     @Test
     void isValid_ShouldReturnFalse_WhenPasswordMismatch() {
 
+        mockConstraintViolation();
+
         RegisterDTO dto = createDTO();
         dto.setConfirmPassword("123");
 
@@ -87,6 +92,8 @@ class RegosterCheckedValidatorTest {
     @Test
     void isValid_ShouldReturnFalse_WhenEmailAlreadyExists() {
 
+        mockConstraintViolation();
+
         RegisterDTO dto = createDTO();
 
         when(userService.checkEmailExist(dto.getEmail()))
@@ -100,6 +107,8 @@ class RegosterCheckedValidatorTest {
 
     @Test
     void isValid_ShouldReturnFalse_WhenPasswordMismatchAndEmailExists() {
+
+        mockConstraintViolation();
 
         RegisterDTO dto = createDTO();
         dto.setConfirmPassword("123");
