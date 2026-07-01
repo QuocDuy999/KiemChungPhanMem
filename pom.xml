@@ -28,11 +28,19 @@
         <url/>
     </scm>
     <packaging>war</packaging>
+    
     <properties>
         <java.version>17</java.version>
+        <!-- CẤU HÌNH SONARQUBE: Bỏ qua thư mục resources và các file frontend -->
+        <sonar.coverage.exclusions>
+            **/src/main/webapp/resources/**,
+            **/*.js,
+            **/*.css,
+            **/*.php
+        </sonar.coverage.exclusions>
     </properties>
+    
     <dependencies>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
@@ -125,13 +133,11 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Đã sửa: Gỡ version cũ để chạy đồng bộ theo bản Parent 3.3.4 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
 
-        <!-- Đã sửa: Gỡ version cũ để tự động nhận diện Context chuẩn -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context-support</artifactId>
@@ -153,12 +159,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-oauth2-client</artifactId>
         </dependency>
+        
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
 
     <build>
@@ -182,27 +188,34 @@
                 <version>3.10.0.2594</version>
             </plugin>
         
-
-        <plugin>
-            <groupId>org.jacoco</groupId>
-            <artifactId>jacoco-maven-plugin</artifactId>
-            <version>0.8.11</version>
-            <executions>
-                <execution>
-                    <goals>
-                        <goal>prepare-agent</goal>
-                    </goals>
-                </execution>
-                <execution>
-                    <id>report</id>
-                    <phase>test</phase>
-                    <goals>
-                        <goal>report</goal>
-                    </goals>
-                </execution>
-            </executions>
-        </plugin>
-    </plugins>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.11</version>
+                <!-- CẤU HÌNH JACOCO: Bỏ qua thư mục resources và các file frontend -->
+                <configuration>
+                    <excludes>
+                        <exclude>**/resources/**</exclude>
+                        <exclude>**/*.js</exclude>
+                        <exclude>**/*.php</exclude>
+                        <exclude>**/*.css</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
-
 </project>

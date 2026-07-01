@@ -21,24 +21,27 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class CustomOAuth2UserService extends DefaultOAuth2UserService implements ICustomOAuth2UserService{
+public class CustomOAuth2UserService extends DefaultOAuth2UserService implements ICustomOAuth2UserService {
     private final UserService userService;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(userRequest);
-        Map<String, Object> attributes = oAuth2User.getAttributes();
+        return processOAuth2User(userRequest, oAuth2User);
+    }
 
-        // get provider
+    // Tách phần logic này ra để dễ dàng Unit Test
+    OAuth2User processOAuth2User(OAuth2UserRequest userRequest, OAuth2User oAuth2User) {
+        Map<String, Object> attributes = oAuth2User.getAttributes();
         String registrationeId = userRequest.getClientRegistration().getRegistrationId();
-        // Process oAuth2User or map it to your local user database
+        
         String email = (String) attributes.get("email");
         String fullName = (String) attributes.get("name");
         Role userRole = this.userService.getRoleByName("USER");
+        
         if (email != null) {
             User user = this.userService.getUserByEmail(email);
             if (user == null) {
-                // craete new user
                 User oldUser = new User();
                 oldUser.setEmail(email);
                 oldUser.setAvatar(
@@ -54,6 +57,5 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService implements
         }
         return new DefaultOAuth2User(Collections.singleton(new SimpleGrantedAuthority("ROLE_" + userRole.getName())),
                 oAuth2User.getAttributes(), "email");
-
     }
 }
