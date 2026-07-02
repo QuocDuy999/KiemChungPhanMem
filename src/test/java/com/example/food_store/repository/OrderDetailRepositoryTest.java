@@ -65,7 +65,6 @@ class OrderDetailRepositoryTest {
         product.setShortDesc("Short");
         product.setQuantity(10L);
         product = productRepository.save(product);
-
         orderDetail = new OrderDetail();
         orderDetail.setQuantity(1);
         orderDetail.setPrice(150000.0);
