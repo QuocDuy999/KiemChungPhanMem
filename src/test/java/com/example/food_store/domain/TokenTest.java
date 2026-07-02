@@ -38,7 +38,6 @@ class TokenTest {
         assertEquals("REF123", builtToken.getToken());
         assertEquals("admin@gmail.com", builtToken.getEmail());
     }
-
     @Test
     void testToken_Boundary_Fields_NullAndEmpty() {
         token.setToken("");
@@ -47,7 +46,6 @@ class TokenTest {
         assertEquals("", token.getToken());
         assertNull(token.getEmail());
     }
-
     @Test
     void testToken_Boundary_InvalidID() {
         token.setId(-1L);
