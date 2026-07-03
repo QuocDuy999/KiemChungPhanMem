@@ -26,22 +26,22 @@ Dựa trên cấu trúc mã nguồn (DTO và Entity), hệ thống đặt ra cá
 
 1.  **Họ và tên (FullName):** 
     *   Trạng thái: Bắt buộc nhập (Required).
-    *   Độ dài: Tối thiểu 3 ký tự, tối đa 255 ký tự (theo chuẩn VARCHAR của DB)[cite: 1, 2].
+    *   Độ dài: Tối thiểu 3 ký tự, tối đa 255 ký tự (theo chuẩn VARCHAR của DB).
     *   Xử lý: Hệ thống phải tự động cắt bỏ khoảng trắng ở hai đầu (Trim) trước khi lưu.
 2.  **Địa chỉ Email:** 
     *   Trạng thái: Bắt buộc nhập.
     *   Định dạng: Phải tuân thủ nghiêm ngặt theo biểu thức chính quy (Regex): `^[a-zA-Z0-9_!#$%&'*+/=?{|}~^.-]+@[a-zA-Z0-9.-]+$`[cite: 1, 2].
-    *   Tính duy nhất: Hệ thống (qua `UserRepository`) phải truy vấn xem Email này đã tồn tại hay chưa. Nếu có, lập tức từ chối và báo lỗi để tránh duplicate data[cite: 3, 5].
+    *   Tính duy nhất: Hệ thống (qua `UserRepository`) phải truy vấn xem Email này đã tồn tại hay chưa. Nếu có, lập tức từ chối và báo lỗi để tránh duplicate data.
 3.  **Mật khẩu (Password):** 
     *   Trạng thái: Bắt buộc nhập.
-    *   Độ dài: Yêu cầu an toàn tối thiểu từ 6 ký tự trở lên[cite: 1, 2]. Tối đa 255 ký tự.
-    *   Bảo mật: Phải được băm (Hash) bằng thư viện `PasswordEncoder` (ví dụ: BCrypt) trước khi lưu xuống DB, tuyệt đối không lưu plain-text[cite: 6].
+    *   Độ dài: Yêu cầu an toàn tối thiểu từ 6 ký tự trở lên. Tối đa 255 ký tự.
+    *   Bảo mật: Phải được băm (Hash) bằng thư viện `PasswordEncoder` (ví dụ: BCrypt) trước khi lưu xuống DB, tuyệt đối không lưu plain-text.
 4.  **Xác nhận mật khẩu (Confirm Password):** 
     *   Trạng thái: Bắt buộc nhập.
-    *   Xác thực: Được kiểm tra qua Custom Annotation `@RegisterChecked`. Dữ liệu truyền vào phải trùng khớp hoàn toàn 100% (Case-sensitive) với trường Mật khẩu[cite: 1].
+    *   Xác thực: Được kiểm tra qua Custom Annotation `@RegisterChecked`. Dữ liệu truyền vào phải trùng khớp hoàn toàn 100% (Case-sensitive) với trường Mật khẩu.
 5.  **Xử lý hậu kỳ (Post-processing):** 
-    *   Tự động gán vai trò (Role): `ROLE_USER`[cite: 6].
-    *   Tự động gán phương thức đăng nhập (Provider): `LOCAL`[cite: 6].
+    *   Tự động gán vai trò (Role): `ROLE_USER`.
+    *   Tự động gán phương thức đăng nhập (Provider): `LOCAL`.
 
 ---
 
