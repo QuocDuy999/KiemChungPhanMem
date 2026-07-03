@@ -282,4 +282,5 @@ class UserControllerTest {
         verify(model).addAttribute("errorNewpassword", "Mật khẩu không hợp lệ");
         verify(userService, never()).handleSaveUser(any());
     }
+    
 }

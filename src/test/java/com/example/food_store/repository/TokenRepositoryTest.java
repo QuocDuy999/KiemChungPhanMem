@@ -53,8 +53,8 @@ class TokenRepositoryTest {
     void testSaveToken_Success() {
 
         Token newToken = new Token();
-        newUserToken.setToken("REF456");
-        newUserToken.setEmail("other_admin@gmail.com");
+        newToken.setToken("REF456");
+        newToken.setEmail("other_admin@gmail.com");
 
         Token savedToken = tokenRepository.save(newToken);
 

@@ -64,6 +64,8 @@ class OrderDetailRepositoryTest {
         product.setDetailDesc("Detail");
         product.setShortDesc("Short");
         product.setQuantity(10L);
+        product.setSource("Việt Nam");   // thêm
+        product.setUnit("Hộp");          // thêm
         product = productRepository.save(product);
         orderDetail = new OrderDetail();
         orderDetail.setQuantity(1);
