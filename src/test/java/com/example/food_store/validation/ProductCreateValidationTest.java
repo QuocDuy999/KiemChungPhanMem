@@ -19,7 +19,9 @@ public class ProductCreateValidationTest {
         validator = factory.getValidator();
     }
 
-    // ===================== HELPER =====================
+    // =====================================================
+    // Helper - Product hợp lệ
+    // =====================================================
     private Product validProduct() {
         Product p = new Product();
         p.setName("Milk Tea");
@@ -32,140 +34,197 @@ public class ProductCreateValidationTest {
         return p;
     }
 
-    // ===================================================
-    // ===================== EP - NAME ===================
-    // ===================================================
+    // =====================================================
+    // TC01 - Valid Product
+    // =====================================================
 
     @Test
-    void TC01_name_valid() {
+    void TC01_validProduct() {
         Product p = validProduct();
-        p.setName("Milk Tea");
         assertTrue(validator.validate(p).isEmpty());
     }
 
+    // =====================================================
+    // NAME
+    // =====================================================
+
     @Test
-    void TC02_name_null() {
+    void TC02_nameNull() {
         Product p = validProduct();
         p.setName(null);
+
         assertFalse(validator.validate(p).isEmpty());
     }
 
     @Test
-    void TC03_name_empty() {
+    void TC03_nameEmpty() {
         Product p = validProduct();
         p.setName("");
+
         assertFalse(validator.validate(p).isEmpty());
     }
 
-    // ===================================================
-    // ===================== EP - PRICE ==================
-    // ===================================================
+    // =====================================================
+    // PRICE
+    // =====================================================
 
     @Test
-    void TC04_price_valid() {
-        Product p = validProduct();
-        p.setPrice(10);
-        assertTrue(validator.validate(p).isEmpty());
-    }
-
-    @Test
-    void TC05_price_null_invalid() {
-        Product p = validProduct();
-        // primitive double không null được → test case logic giữ EP
-        p.setPrice(0);
-        assertFalse(validator.validate(p).isEmpty());
-    }
-
-    @Test
-    void TC06_price_negative() {
+    void TC04_priceMinusOne() {
         Product p = validProduct();
         p.setPrice(-1);
+
         assertFalse(validator.validate(p).isEmpty());
     }
 
     @Test
-    void TC07_price_zero() {
+    void TC05_priceZero() {
         Product p = validProduct();
         p.setPrice(0);
+
         assertFalse(validator.validate(p).isEmpty());
     }
 
     @Test
-    void TC08_price_min_plus() {
+    void TC06_priceMinPlus() {
         Product p = validProduct();
         p.setPrice(0.01);
-        assertTrue(validator.validate(p).isEmpty());
-    }
-        // ===================================================
-    // ===================== EP - QUANTITY ===============
-    // ===================================================
 
-    @Test
-    void TC09_quantity_valid() {
-        Product p = validProduct();
-        p.setQuantity(10);
         assertTrue(validator.validate(p).isEmpty());
     }
 
+    // =====================================================
+    // QUANTITY
+    // =====================================================
+
     @Test
-    void TC10_quantity_zero() {
+    void TC07_quantityZero() {
         Product p = validProduct();
         p.setQuantity(0);
+
         assertFalse(validator.validate(p).isEmpty());
     }
 
     @Test
-    void TC11_quantity_negative() {
-        Product p = validProduct();
-        p.setQuantity(-1);
-        assertFalse(validator.validate(p).isEmpty());
-    }
-
-    @Test
-    void TC12_quantity_min_plus() {
+    void TC08_quantityMin() {
         Product p = validProduct();
         p.setQuantity(1);
+
         assertTrue(validator.validate(p).isEmpty());
     }
 
-    // ===================================================
-    // ============ EP - DETAIL DESC / SHORT DESC ========
-    // ===================================================
+    @Test
+    void TC09_quantityMinPlus() {
+        Product p = validProduct();
+        p.setQuantity(2);
+
+        assertTrue(validator.validate(p).isEmpty());
+    }
+
+    // =====================================================
+    // DETAIL DESCRIPTION
+    // =====================================================
 
     @Test
-    void TC13_detail_null() {
+    void TC10_detailDescNull() {
         Product p = validProduct();
         p.setDetailDesc(null);
+
         assertFalse(validator.validate(p).isEmpty());
     }
 
     @Test
-    void TC14_detail_empty() {
+    void TC11_detailDescEmpty() {
         Product p = validProduct();
         p.setDetailDesc("");
+
         assertFalse(validator.validate(p).isEmpty());
     }
 
+    // =====================================================
+    // SHORT DESCRIPTION
+    // =====================================================
+
     @Test
-    void TC15_short_null() {
+    void TC12_shortDescNull() {
         Product p = validProduct();
         p.setShortDesc(null);
+
         assertFalse(validator.validate(p).isEmpty());
     }
 
     @Test
-    void TC16_short_empty() {
+    void TC13_shortDescEmpty() {
         Product p = validProduct();
         p.setShortDesc("");
+
         assertFalse(validator.validate(p).isEmpty());
     }
 
-    // ===================================================
-    // ================= FULL INVALID FORM ===============
-    // ===================================================
+    // =====================================================
+    // SOURCE
+    // =====================================================
 
     @Test
-    void TC17_all_invalid() {
+    void TC14_sourceNull() {
+        Product p = validProduct();
+        p.setSource(null);
+
+        assertFalse(validator.validate(p).isEmpty());
+    }
+
+    // =====================================================
+    // UNIT
+    // =====================================================
+
+    @Test
+    void TC15_unitNull() {
+        Product p = validProduct();
+        p.setUnit(null);
+
+        assertFalse(validator.validate(p).isEmpty());
+    }
+
+    // =====================================================
+    // BOUNDARY COMBINATION
+    // =====================================================
+
+    @Test
+    void TC16_priceMinPlus_quantityMin() {
+        Product p = validProduct();
+
+        p.setPrice(0.01);
+        p.setQuantity(1);
+
+        assertTrue(validator.validate(p).isEmpty());
+    }
+
+    @Test
+    void TC17_priceInvalid_quantityValid() {
+        Product p = validProduct();
+
+        p.setPrice(0);
+        p.setQuantity(1);
+
+        assertFalse(validator.validate(p).isEmpty());
+    }
+
+    @Test
+    void TC18_priceValid_quantityInvalid() {
+        Product p = validProduct();
+
+        p.setPrice(10);
+        p.setQuantity(0);
+
+        assertFalse(validator.validate(p).isEmpty());
+    }
+
+    // =====================================================
+    // FULL INVALID
+    // =====================================================
+
+    @Test
+    void TC19_allInvalid() {
+
         Product p = new Product();
 
         p.setName("");
@@ -173,16 +232,19 @@ public class ProductCreateValidationTest {
         p.setQuantity(0);
         p.setDetailDesc("");
         p.setShortDesc("");
+        p.setSource(null);
+        p.setUnit(null);
 
         assertFalse(validator.validate(p).isEmpty());
     }
 
-    // ===================================================
-    // ================= BVA EDGE COMBINATION ============
-    // ===================================================
+    // =====================================================
+    // ALL BOUNDARY VALID
+    // =====================================================
 
     @Test
-    void TC18_boundary_all_min_plus() {
+    void TC20_allBoundaryValid() {
+
         Product p = validProduct();
 
         p.setPrice(0.01);
@@ -191,23 +253,4 @@ public class ProductCreateValidationTest {
         assertTrue(validator.validate(p).isEmpty());
     }
 
-    @Test
-    void TC19_boundary_price_fail_quantity_ok() {
-        Product p = validProduct();
-
-        p.setPrice(0);
-        p.setQuantity(1);
-
-        assertFalse(validator.validate(p).isEmpty());
-    }
-
-    @Test
-    void TC20_boundary_price_ok_quantity_fail() {
-        Product p = validProduct();
-
-        p.setPrice(10);
-        p.setQuantity(0);
-
-        assertFalse(validator.validate(p).isEmpty());
-    }
 }
